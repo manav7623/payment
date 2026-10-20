@@ -6,7 +6,7 @@ import CategorySummary from '../components/CategorySummary';
 import ExpenseCard from '../components/ExpenseCard';
 import ExpenseTable from '../components/ExpenseTable';
 import FriendsSummaryWidget from '../components/FriendsSummaryWidget';
-import { PlusCircle, ArrowRight, RefreshCw, HandCoins } from 'lucide-react';
+import { PlusCircle, ArrowRight, RefreshCw, HandCoins, Receipt } from 'lucide-react';
 
 export default function Dashboard({ 
   onOpenAddExpense, 
@@ -37,7 +37,7 @@ export default function Dashboard({
   return (
     <div className="page-container">
       {/* Page Header */}
-      <div className="page-header">
+      <div className="page-header dashboard-header">
         <div>
           <h1 style={{ marginBottom: '0.2rem' }}>
             MD Dashboard
@@ -47,7 +47,8 @@ export default function Dashboard({
           </p>
         </div>
 
-        <div className="page-header-actions">
+        {/* Desktop Header Actions (hidden on phone, mobile uses quick action strip & floating button) */}
+        <div className="page-header-actions desktop-header-actions">
           <button
             type="button"
             onClick={() => loadDashboardData(true)}
@@ -59,7 +60,6 @@ export default function Dashboard({
             <span className="desktop-only">Refresh</span>
           </button>
 
-          {/* Quick Friend Popup Trigger */}
           <button
             type="button"
             onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
@@ -67,7 +67,7 @@ export default function Dashboard({
             style={{ height: '38px' }}
           >
             <HandCoins size={16} />
-            <span>Friend</span>
+            <span>Friends</span>
           </button>
 
           <button
@@ -84,6 +84,53 @@ export default function Dashboard({
 
       {/* 4 Primary Summary Cards */}
       <SummaryCards summary={data?.summary} loading={loading} />
+
+      {/* Mobile Fintech Quick Actions Strip (Phone Only) */}
+      <div className="mobile-quick-actions-strip">
+        <button
+          type="button"
+          onClick={onOpenAddExpense}
+          className="quick-action-btn"
+        >
+          <div className="quick-action-icon action-blue">
+            <PlusCircle size={20} />
+          </div>
+          <span className="quick-action-text">Add Spend</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
+          className="quick-action-btn"
+        >
+          <div className="quick-action-icon action-emerald">
+            <HandCoins size={19} />
+          </div>
+          <span className="quick-action-text">Friends</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={onNavigateToExpenses}
+          className="quick-action-btn"
+        >
+          <div className="quick-action-icon action-purple">
+            <Receipt size={18} />
+          </div>
+          <span className="quick-action-text">History</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => loadDashboardData(true)}
+          className="quick-action-btn"
+        >
+          <div className="quick-action-icon action-amber">
+            <RefreshCw size={17} />
+          </div>
+          <span className="quick-action-text">Refresh</span>
+        </button>
+      </div>
 
       {/* Friends Ledger Widget (Separate from personal expenses) */}
       <FriendsSummaryWidget onOpenFriendModal={onOpenFriendModal} />

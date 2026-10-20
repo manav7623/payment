@@ -37,9 +37,9 @@ export default function FriendsSummaryWidget({ onOpenFriendModal }) {
   const activeFriends = ledger.filter(f => f.netBalance !== 0).slice(0, 4);
 
   return (
-    <div className="card" style={{ marginBottom: '1.25rem', overflow: 'hidden' }}>
+    <div className="card friend-summary-widget-card" style={{ marginBottom: '1.25rem' }}>
       {/* Widget Header */}
-      <div className="card-header" style={{ paddingBottom: '0.85rem' }}>
+      <div className="card-header friend-widget-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
           <div style={{
             width: '36px',
@@ -50,80 +50,72 @@ export default function FriendsSummaryWidget({ onOpenFriendModal }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 3px 8px rgba(16, 185, 129, 0.3)'
+            boxShadow: '0 3px 8px rgba(16, 185, 129, 0.3)',
+            flexShrink: 0
           }}>
             <HandCoins size={19} />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <h2 className="card-title" style={{ margin: 0, fontSize: '1.08rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <h2 className="card-title" style={{ margin: 0, fontSize: '1.05rem' }}>
                 Friends Ledger
               </h2>
               <span style={{
-                fontSize: '0.7rem',
+                fontSize: '0.68rem',
                 fontWeight: 700,
-                padding: '0.12rem 0.45rem',
+                padding: '0.1rem 0.45rem',
                 borderRadius: '9999px',
                 backgroundColor: '#ecfdf5',
                 color: '#059669',
                 border: '1px solid #a7f3d0'
               }}>
-                Separate Balances
+                Separate
               </span>
             </div>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', margin: 0 }}>
-              Track money lent to or borrowed from friends separately
+            <p style={{ fontSize: '0.76rem', color: 'var(--text-light)', margin: 0 }}>
+              Track lent & borrowed amounts
             </p>
           </div>
         </div>
 
         {/* Action Button: Opens the Friend popup */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
           <button
             type="button"
             onClick={() => onOpenFriendModal ? onOpenFriendModal('add') : null}
             className="btn btn-primary btn-sm"
             style={{
-              height: '34px',
-              padding: '0 0.85rem',
-              fontSize: '0.82rem',
+              height: '32px',
+              padding: '0 0.75rem',
+              fontSize: '0.8rem',
               background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
               borderColor: '#059669',
               boxShadow: '0 2px 6px rgba(16, 185, 129, 0.25)'
             }}
           >
-            <PlusCircle size={15} />
-            <span>+ Add Record</span>
+            <PlusCircle size={14} />
+            <span>+ Add<span className="desktop-only"> Record</span></span>
           </button>
 
           <button
             type="button"
             onClick={() => onOpenFriendModal ? onOpenFriendModal('ledger') : null}
-            className="btn btn-secondary btn-sm"
-            style={{ height: '34px', padding: '0 0.75rem', fontSize: '0.82rem' }}
+            className="btn btn-secondary btn-sm desktop-only"
+            style={{ height: '32px', padding: '0 0.7rem', fontSize: '0.8rem' }}
           >
-            <Users size={15} />
-            <span className="desktop-only">Balances</span>
+            <Users size={14} />
+            <span>Balances</span>
           </button>
         </div>
       </div>
 
       {/* 3 Metric Cards Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '0.85rem',
-        padding: '0 1.25rem 1rem'
-      }}>
+      <div className="friend-widget-stats-grid">
         {/* Card 1: To Receive (Lent) */}
         <div 
           onClick={() => onOpenFriendModal ? onOpenFriendModal('history') : null}
-          className="friend-widget-stat-card"
-          style={{
-            backgroundColor: '#f0fdf4',
-            borderColor: '#bbf7d0',
-            cursor: 'pointer'
-          }}
+          className="friend-widget-stat-card lene-stat-card"
+          style={{ cursor: 'pointer' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#166534' }}>
@@ -153,12 +145,8 @@ export default function FriendsSummaryWidget({ onOpenFriendModal }) {
         {/* Card 2: To Pay (Borrowed) */}
         <div 
           onClick={() => onOpenFriendModal ? onOpenFriendModal('history') : null}
-          className="friend-widget-stat-card"
-          style={{
-            backgroundColor: '#fef2f2',
-            borderColor: '#fecaca',
-            cursor: 'pointer'
-          }}
+          className="friend-widget-stat-card dene-stat-card"
+          style={{ cursor: 'pointer' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#991b1b' }}>
@@ -188,12 +176,8 @@ export default function FriendsSummaryWidget({ onOpenFriendModal }) {
         {/* Card 3: Net Balance */}
         <div 
           onClick={() => onOpenFriendModal ? onOpenFriendModal('ledger') : null}
-          className="friend-widget-stat-card"
-          style={{
-            backgroundColor: netBalance >= 0 ? '#f0fdf4' : '#fff7ed',
-            borderColor: netBalance >= 0 ? '#bbf7d0' : '#fed7aa',
-            cursor: 'pointer'
-          }}
+          className="friend-widget-stat-card net-stat-card"
+          style={{ cursor: 'pointer' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 600, color: netBalance >= 0 ? '#166534' : '#9a3412' }}>

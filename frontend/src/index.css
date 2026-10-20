@@ -229,6 +229,22 @@ a:hover {
   }
 }
 
+.top-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .top-navbar {
+    height: 56px;
+    padding: 0 0.85rem;
+  }
+  .nav-add-expense-btn {
+    display: none !important;
+  }
+}
+
 .top-navbar-title {
   display: flex;
   align-items: center;
@@ -299,12 +315,31 @@ a:hover {
   margin-bottom: 1.25rem;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 640px) {
+  .page-header {
+    margin-bottom: 0.85rem;
+    gap: 0.35rem;
+  }
+  .page-header h1 {
+    font-size: 1.35rem !important;
+  }
+  .desktop-header-actions {
+    display: none !important;
+  }
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 641px) {
   .page-header {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1.5rem;
+  }
+  .mobile-only {
+    display: none !important;
   }
 }
 
@@ -401,8 +436,8 @@ a:hover {
 
 .hero-wallet-subrow {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
   position: relative;
   z-index: 1;
 }
@@ -413,84 +448,127 @@ a:hover {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-md);
-  padding: 0.55rem 0.75rem;
+  padding: 0.5rem 0.45rem;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.1rem;
+  min-width: 0;
 }
 
 .hero-wallet-subpill-label {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  white-space: nowrap;
 }
 
 .hero-wallet-subpill-val {
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   font-weight: 700;
   color: #ffffff;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Secondary Micro Stats Row (Mobile) */
-.mobile-secondary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.55rem;
+.hero-wallet-subpill-sub {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mobile-micro-card {
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: 0.75rem 0.65rem;
+/* ========================================================
+   MOBILE QUICK ACTIONS STRIP (Fintech Action Buttons)
+   ======================================================== */
+.mobile-quick-actions-strip {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-quick-actions-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.45rem;
+    margin-bottom: 1.15rem;
+    background: #ffffff;
+    padding: 0.75rem 0.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  }
+}
+
+.quick-action-btn {
+  background: none;
+  border: none;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  padding: 0.2rem 0.1rem;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+  min-width: 0;
 }
 
-.mobile-micro-card:active {
-  transform: scale(0.98);
+.quick-action-btn:active {
+  transform: scale(0.92);
 }
 
-.mobile-micro-icon-wrap {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+.quick-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.45rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.mobile-micro-label {
-  font-size: 0.72rem;
-  color: var(--text-light);
-  font-weight: 500;
-  margin-bottom: 0.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.quick-action-icon.action-blue {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
 }
 
-.mobile-micro-val {
-  font-size: 1.05rem;
-  font-weight: 700;
+.quick-action-icon.action-emerald {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.quick-action-icon.action-purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+}
+
+.quick-action-icon.action-amber {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.quick-action-text {
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--text-main);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
-.mobile-micro-subtext {
-  font-size: 0.68rem;
-  color: var(--text-light);
-  margin-top: 0.15rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Secondary Micro Stats Row (Optional fallback) */
+.mobile-secondary-grid {
+  display: none;
 }
 
 /* Desktop Summary Grid */
@@ -1802,6 +1880,40 @@ a:hover {
   font-weight: 700;
 }
 
+/* Friends Summary Widget Header */
+.friend-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+}
+
+@media (max-width: 640px) {
+  .friend-widget-header {
+    padding: 0.75rem 0.85rem;
+  }
+}
+
+/* Friends Widget Stats Grid */
+.friend-widget-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .friend-widget-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.55rem;
+    margin-bottom: 0.75rem;
+  }
+  .friend-widget-stats-grid .net-stat-card {
+    grid-column: 1 / -1;
+  }
+}
+
 /* Widget Stat Card */
 .friend-widget-stat-card {
   padding: 1rem;
@@ -1810,9 +1922,30 @@ a:hover {
   transition: all 0.18s ease;
 }
 
+@media (max-width: 640px) {
+  .friend-widget-stat-card {
+    padding: 0.75rem 0.65rem;
+  }
+}
+
 .friend-widget-stat-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
+}
+
+.lene-stat-card {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.dene-stat-card {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.net-stat-card {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
 }
 
 /* Pill view button */

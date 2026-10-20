@@ -16,25 +16,25 @@ export default function Navbar({ onOpenAddExpense, onOpenFriendModal }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
-        {/* Dedicated Friend Popup Button */}
+      <div className="top-navbar-actions">
+        {/* Friends Ledger Popup Button */}
         <button
           type="button"
           onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
           className="btn btn-sm friend-nav-btn"
           title="Friends Ledger Popup"
         >
-          <HandCoins size={16} />
+          <HandCoins size={15} />
           <span>Friends</span>
         </button>
 
+        {/* Add Expense (Desktop only in top navbar; mobile uses center floating + button) */}
         <button
           type="button"
           onClick={onOpenAddExpense}
-          className="btn btn-primary btn-sm"
-          style={{ height: '36px', padding: '0 0.95rem', gap: '0.4rem', fontSize: '0.85rem' }}
+          className="btn btn-primary btn-sm nav-add-expense-btn"
         >
-          <PlusCircle size={16} />
+          <PlusCircle size={15} />
           <span>Add Expense</span>
         </button>
       </div>

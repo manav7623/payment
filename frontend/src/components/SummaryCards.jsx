@@ -56,11 +56,11 @@ export default function SummaryCards({ summary, loading }) {
         <div className="hero-wallet-card">
           <div className="hero-wallet-header">
             <span className="hero-wallet-label">
-              <TrendingUp size={16} />
+              <TrendingUp size={15} />
               <span>Spent This Month</span>
             </span>
             <span className="hero-wallet-badge">
-              {loading ? '...' : `${thisMonthCount} transactions`}
+              {loading ? '...' : `${thisMonthCount} txns`}
             </span>
           </div>
 
@@ -71,58 +71,41 @@ export default function SummaryCards({ summary, loading }) {
           <div className="hero-wallet-subrow">
             <div className="hero-wallet-subpill">
               <span className="hero-wallet-subpill-label">
-                <Sun size={12} />
+                <Sun size={11} />
                 <span>Today</span>
               </span>
               <span className="hero-wallet-subpill-val">
                 {loading ? '...' : formatINR(todayAmount)}
               </span>
+              <span className="hero-wallet-subpill-sub">
+                {summary?.today_count || 0} txns
+              </span>
             </div>
 
             <div className="hero-wallet-subpill">
               <span className="hero-wallet-subpill-label">
-                <Clock size={12} />
+                <Clock size={11} />
                 <span>This Week</span>
               </span>
               <span className="hero-wallet-subpill-val">
                 {loading ? '...' : formatINR(thisWeekAmount)}
               </span>
+              <span className="hero-wallet-subpill-sub">
+                {summary?.week_count || 0} txns
+              </span>
             </div>
-          </div>
-        </div>
 
-        {/* 3 Secondary Micro Metric Cards */}
-        <div className="mobile-secondary-grid">
-          <div className="mobile-micro-card">
-            <div className="mobile-micro-icon-wrap" style={{ background: '#fffbeb', color: '#d97706' }}>
-              <Sun size={16} />
-            </div>
-            <div>
-              <div className="mobile-micro-label">Today's Spend</div>
-              <div className="mobile-micro-val">{loading ? '...' : formatINR(todayAmount)}</div>
-              <div className="mobile-micro-subtext">{summary?.today_count || 0} txns</div>
-            </div>
-          </div>
-
-          <div className="mobile-micro-card">
-            <div className="mobile-micro-icon-wrap" style={{ background: '#f0f9ff', color: '#0284c7' }}>
-              <Clock size={16} />
-            </div>
-            <div>
-              <div className="mobile-micro-label">This Week</div>
-              <div className="mobile-micro-val">{loading ? '...' : formatINR(thisWeekAmount)}</div>
-              <div className="mobile-micro-subtext">{summary?.week_count || 0} txns</div>
-            </div>
-          </div>
-
-          <div className="mobile-micro-card">
-            <div className="mobile-micro-icon-wrap" style={{ background: '#f0fdf4', color: '#16a34a' }}>
-              <Receipt size={16} />
-            </div>
-            <div>
-              <div className="mobile-micro-label">Total Spend</div>
-              <div className="mobile-micro-val">{loading ? '...' : formatINR(totalSpent)}</div>
-              <div className="mobile-micro-subtext">{totalTxnCount} total</div>
+            <div className="hero-wallet-subpill">
+              <span className="hero-wallet-subpill-label">
+                <Receipt size={11} />
+                <span>All-Time</span>
+              </span>
+              <span className="hero-wallet-subpill-val">
+                {loading ? '...' : formatINR(totalSpent)}
+              </span>
+              <span className="hero-wallet-subpill-sub">
+                {totalTxnCount} total
+              </span>
             </div>
           </div>
         </div>
