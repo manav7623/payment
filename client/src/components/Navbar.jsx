@@ -1,39 +1,29 @@
 import React from 'react';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Wallet } from 'lucide-react';
 
 export default function Navbar({ onOpenAddExpense }) {
   return (
     <header className="top-navbar">
-      <div className="top-navbar-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '8px',
-          background: 'linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%)',
-          color: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontWeight: 800,
-          fontSize: '0.92rem',
-          letterSpacing: '-0.3px',
-          boxShadow: '0 2px 8px rgba(37, 99, 235, 0.25)'
-        }}>
-          MD
+      <div className="top-navbar-title">
+        <div className="brand-icon-box">
+          <Wallet size={19} strokeWidth={2.4} />
         </div>
-        <span style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '-0.4px', color: 'var(--text-main)' }}>
-          MD
-        </span>
+        <div>
+          <div className="brand-text-title">
+            <span>MD</span>
+            <span className="brand-text-badge">Expenses</span>
+          </div>
+        </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
         <button
           type="button"
           onClick={onOpenAddExpense}
           className="btn btn-primary btn-sm"
-          style={{ height: '34px', padding: '0 0.85rem', fontSize: '0.85rem' }}
+          style={{ height: '36px', padding: '0 0.95rem', gap: '0.4rem', fontSize: '0.85rem' }}
         >
-          <PlusCircle size={15} />
+          <PlusCircle size={16} />
           <span>Add Expense</span>
         </button>
       </div>

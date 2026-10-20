@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/client';
-import { X, UploadCloud } from 'lucide-react';
+import { X, UploadCloud, Smartphone, Banknote, CreditCard, Building2 } from 'lucide-react';
 
 export default function EditExpenseModal({ 
   isOpen, 
@@ -41,6 +41,13 @@ export default function EditExpenseModal({
   }, [expense, isOpen]);
 
   if (!isOpen || !expense) return null;
+
+  const quickAmounts = [100, 200, 500, 1000, 2000];
+
+  const handleAddQuickAmount = (delta) => {
+    const current = parseFloat(amount) || 0;
+    setAmount(String(current + delta));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,14 +100,23 @@ export default function EditExpenseModal({
   ];
 
   const categoryList = categories.length > 0 ? categories.map(c => c.name) : defaultCategories;
-  const methods = ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Net Banking', 'Other'];
+  const popularMethods = [
+    { id: 'UPI', label: 'UPI', icon: Smartphone },
+    { id: 'Cash', label: 'Cash', icon: Banknote },
+    { id: 'Credit Card', label: 'Credit Card', icon: CreditCard },
+    { id: 'Debit Card', label: 'Debit Card', icon: CreditCard },
+    { id: 'Net Banking', label: 'Net Banking', icon: Building2 }
+  ];
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+        {/* Mobile drag handle */}
+        <div className="modal-drag-handle" />
+
         <div className="modal-header">
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Edit Expense</h3>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Edit Expense</h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>
               Record #{expense.id}
             </span>
@@ -109,7 +125,8 @@ export default function EditExpenseModal({
             type="button" 
             onClick={onClose} 
             className="btn btn-secondary btn-sm"
-            style={{ border: 'none', padding: '0.3rem' }}
+            style={{ border: 'none', padding: '0.35rem' }}
+            aria-label="Close"
           >
             <X size={20} />
           </button>
@@ -119,18 +136,35 @@ export default function EditExpenseModal({
           <div className="modal-body">
             {error && <div className="alert alert-error">{error}</div>}
 
-            <div className="form-group">
+            {/* Big Currency Input */}
+            <div className="form-group" style={{ marginBottom: '0.5rem' }}>
               <label className="form-label">Amount (₹) *</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0.5"
-                required
-                className="form-input"
-                style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--primary)' }}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
+              <div className="hero-currency-input-wrapper">
+                <span className="hero-currency-symbol">₹</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.5"
+                  required
+                  className="hero-currency-input"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+
+              {/* Quick Amount Chips */}
+              <div className="quick-amount-chips">
+                {quickAmounts.map(amt => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => handleAddQuickAmount(amt)}
+                    className="quick-amount-chip"
+                  >
+                    +₹{amt}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="form-group">
@@ -144,33 +178,39 @@ export default function EditExpenseModal({
               />
             </div>
 
-            <div className="form-grid form-grid-2">
-              <div className="form-group">
-                <label className="form-label">Category *</label>
-                <select
-                  className="form-select"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  required
-                >
-                  {categoryList.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
+            <div className="form-group">
+              <label className="form-label">Category *</label>
+              <select
+                className="form-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                {categoryList.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
 
-              <div className="form-group">
-                <label className="form-label">Payment Method *</label>
-                <select
-                  className="form-select"
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  required
-                >
-                  {methods.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
+            {/* Payment Method Pills */}
+            <div className="form-group">
+              <label className="form-label">Payment Method *</label>
+              <div className="method-segmented-group">
+                {popularMethods.map(m => {
+                  const Icon = m.icon;
+                  const isSelected = paymentMethod === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setPaymentMethod(m.id)}
+                      className={`method-segment-btn ${isSelected ? 'active' : ''}`}
+                    >
+                      <Icon size={16} />
+                      <span>{m.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -186,11 +226,11 @@ export default function EditExpenseModal({
             </div>
 
             <div className="form-group">
-              <label className="form-label">Replace Receipt (Optional)</label>
+              <label className="form-label">Replace Bill / Screenshot (Optional)</label>
               <div style={{
-                border: '1px dashed var(--border-input)',
-                borderRadius: 'var(--radius-md)',
-                padding: '0.85rem',
+                border: '1.5px dashed var(--border-input)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '0.95rem',
                 textAlign: 'center',
                 backgroundColor: 'var(--bg-subtle)'
               }}>
@@ -205,10 +245,10 @@ export default function EditExpenseModal({
                     }
                   }}
                 />
-                <label htmlFor="edit-expense-receipt" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
+                <label htmlFor="edit-expense-receipt" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
                   <UploadCloud size={24} style={{ color: 'var(--primary)' }} />
-                  <span style={{ fontSize: '0.88rem', fontWeight: 500, color: 'var(--primary)' }}>
-                    {receiptFile ? receiptFile.name : (expense.receipt_url ? 'Tap to change attached receipt' : 'Tap to attach receipt')}
+                  <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--primary)' }}>
+                    {receiptFile ? receiptFile.name : (expense.receipt_url ? 'Tap to change attached bill' : 'Tap to attach bill')}
                   </span>
                 </label>
               </div>
@@ -228,7 +268,7 @@ export default function EditExpenseModal({
             <button type="button" onClick={onClose} className="btn btn-secondary" disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary" style={{ minWidth: '120px' }} disabled={loading}>
               {loading ? 'Updating...' : 'Update Expense'}
             </button>
           </div>

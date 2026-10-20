@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/client';
 import { Tag, Plus, Trash2, X } from 'lucide-react';
+import { getCategoryTheme } from '../utils/categoryTheme';
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -93,47 +94,58 @@ export default function Categories() {
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
-          {categories.map((cat) => (
-            <div 
-              key={cat.id} 
-              className="card"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.85rem 1rem',
-                margin: 0
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                <span style={{
-                  width: '14px',
-                  height: '14px',
-                  borderRadius: '50%',
-                  backgroundColor: cat.color || 'var(--primary)',
-                  display: 'inline-block'
-                }}></span>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.92rem' }}>{cat.name}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>
-                    {cat.is_default ? 'System Default' : 'Custom Category'}
+          {categories.map((cat) => {
+            const theme = getCategoryTheme(cat.name);
+            const CatIcon = theme.icon;
+            return (
+              <div 
+                key={cat.id} 
+                className="card"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.85rem 1rem',
+                  margin: 0
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '10px',
+                    backgroundColor: theme.bg,
+                    color: theme.color,
+                    border: `1px solid ${theme.border}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <CatIcon size={18} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.94rem' }}>{cat.name}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>
+                      {cat.is_default ? 'System Default' : 'Custom Category'}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {!cat.is_default && (
-                <button
-                  type="button"
-                  onClick={() => handleDelete(cat.id, cat.name)}
-                  className="btn btn-secondary btn-sm"
-                  style={{ padding: '0.3rem', color: 'var(--danger)', border: 'none' }}
-                  title="Delete Category"
-                >
-                  <Trash2 size={15} />
-                </button>
-              )}
-            </div>
-          ))}
+                {!cat.is_default && (
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(cat.id, cat.name)}
+                    className="btn btn-secondary btn-sm"
+                    style={{ padding: '0.35rem', color: 'var(--danger)', border: 'none', borderRadius: 'var(--radius-sm)' }}
+                    title="Delete Category"
+                    aria-label="Delete"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -141,13 +153,16 @@ export default function Categories() {
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '420px' }}>
+            <div className="modal-drag-handle" />
+
             <div className="modal-header">
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Create Category</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Create Category</h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="btn btn-secondary btn-sm"
-                style={{ border: 'none', padding: '0.3rem' }}
+                style={{ border: 'none', padding: '0.35rem' }}
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
@@ -172,15 +187,15 @@ export default function Categories() {
 
                 <div className="form-group">
                   <label className="form-label">Color Indicator</label>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center' }}>
                     <input
                       type="color"
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
-                      style={{ width: '42px', height: '36px', border: '1px solid var(--border-light)', borderRadius: '6px', cursor: 'pointer' }}
+                      style={{ width: '44px', height: '38px', border: '1px solid var(--border-light)', borderRadius: '8px', cursor: 'pointer' }}
                     />
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                      Selected: <code style={{ backgroundColor: 'var(--bg-subtle)', padding: '2px 4px', borderRadius: '4px' }}>{color}</code>
+                      Selected: <code style={{ backgroundColor: 'var(--bg-subtle)', padding: '2px 6px', borderRadius: '4px' }}>{color}</code>
                     </span>
                   </div>
                 </div>

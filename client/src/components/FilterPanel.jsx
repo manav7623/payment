@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatINR } from '../utils/formatters';
-import { Filter, ChevronDown, ChevronUp, RotateCcw, Search, Download } from 'lucide-react';
+import { Filter, ChevronDown, ChevronUp, RotateCcw, Search, Download, X } from 'lucide-react';
 
 export default function FilterPanel({
   filters,
@@ -48,17 +48,20 @@ export default function FilterPanel({
     }));
   };
 
-  const hasActiveFilters = 
-    filters.period !== 'all' || 
-    filters.category !== 'all' || 
-    filters.method !== 'all' || 
-    filters.minAmount !== '' || 
-    filters.maxAmount !== '' || 
-    filters.search !== '';
+  const activeFiltersCount = [
+    filters.period !== 'all',
+    filters.category !== 'all',
+    filters.method !== 'all',
+    Boolean(filters.minAmount),
+    Boolean(filters.maxAmount),
+    Boolean(filters.search)
+  ].filter(Boolean).length;
+
+  const hasActiveFilters = activeFiltersCount > 0;
 
   return (
     <div className="filter-bar">
-      {/* Quick Period Tabs */}
+      {/* Quick Period Tabs (Horizontal touch scroll) */}
       <div className="quick-period-tabs">
         {periods.map(p => (
           <button
@@ -76,12 +79,13 @@ export default function FilterPanel({
       {filters.period === 'custom' && (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
           gap: '0.5rem',
           marginBottom: '0.85rem',
-          padding: '0.65rem',
+          padding: '0.75rem',
           backgroundColor: 'var(--bg-subtle)',
-          borderRadius: 'var(--radius-md)'
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid var(--border-light)'
         }}>
           <div>
             <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
@@ -90,7 +94,7 @@ export default function FilterPanel({
             <input
               type="date"
               className="form-input"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.startDate}
               onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
             />
@@ -102,7 +106,7 @@ export default function FilterPanel({
             <input
               type="date"
               className="form-input"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.endDate}
               onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
             />
@@ -111,28 +115,72 @@ export default function FilterPanel({
       )}
 
       {/* Search Input & Collapsible Toggle Row */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '0.45rem', marginBottom: '0.65rem', alignItems: 'center' }}>
         <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
+          <Search 
+            size={16} 
+            style={{ 
+              position: 'absolute', 
+              left: '12px', 
+              top: '50%', 
+              transform: 'translateY(-50%)', 
+              color: 'var(--text-light)' 
+            }} 
+          />
           <input
             type="text"
             className="form-input"
-            style={{ paddingLeft: '2.1rem', minHeight: '38px', fontSize: '0.88rem' }}
-            placeholder="Search expense title, notes..."
+            style={{ 
+              paddingLeft: '2.25rem', 
+              paddingRight: filters.search ? '2rem' : '0.75rem',
+              minHeight: '40px', 
+              fontSize: '0.88rem',
+              borderRadius: 'var(--radius-full)'
+            }}
+            placeholder="Search expenses, notes..."
             value={filters.search}
             onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
           />
+          {filters.search && (
+            <button
+              type="button"
+              onClick={() => setFilters(prev => ({ ...prev, search: '' }))}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-light)',
+                cursor: 'pointer',
+                display: 'flex'
+              }}
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className={`btn btn-secondary btn-sm ${hasActiveFilters ? 'active' : ''}`}
-          style={{ height: '38px', gap: '0.35rem' }}
+          className={`btn btn-secondary btn-sm ${hasActiveFilters ? 'btn-primary' : ''}`}
+          style={{ height: '40px', gap: '0.35rem', borderRadius: 'var(--radius-full)', padding: '0 0.85rem' }}
         >
-          <Filter size={15} />
+          <Filter size={14} />
           <span>Filters</span>
-          {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          {activeFiltersCount > 0 && (
+            <span style={{ 
+              backgroundColor: 'rgba(255,255,255,0.3)', 
+              borderRadius: '99px', 
+              padding: '1px 6px', 
+              fontSize: '0.72rem' 
+            }}>
+              {activeFiltersCount}
+            </span>
+          )}
+          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
 
         {hasActiveFilters && (
@@ -140,7 +188,7 @@ export default function FilterPanel({
             type="button"
             onClick={onReset}
             className="btn btn-secondary btn-sm"
-            style={{ height: '38px', padding: '0.4rem 0.6rem' }}
+            style={{ height: '40px', width: '40px', padding: 0, borderRadius: 'var(--radius-full)' }}
             title="Reset Filters"
           >
             <RotateCcw size={15} />
@@ -152,8 +200,8 @@ export default function FilterPanel({
       {isExpanded && (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-          gap: '0.75rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: '0.65rem',
           padding: '0.85rem',
           backgroundColor: 'var(--bg-subtle)',
           borderRadius: 'var(--radius-md)',
@@ -161,12 +209,12 @@ export default function FilterPanel({
           border: '1px solid var(--border-light)'
         }}>
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
+            <label style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
               Category
             </label>
             <select
               className="form-select"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
             >
@@ -178,12 +226,12 @@ export default function FilterPanel({
           </div>
 
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
+            <label style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
               Payment Method
             </label>
             <select
               className="form-select"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.method}
               onChange={(e) => setFilters(prev => ({ ...prev, method: e.target.value }))}
             >
@@ -195,28 +243,28 @@ export default function FilterPanel({
           </div>
 
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
-              Min Amount (₹)
+            <label style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
+              Min (₹)
             </label>
             <input
               type="number"
-              placeholder="Min"
+              placeholder="Min ₹"
               className="form-input"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.minAmount}
               onChange={(e) => setFilters(prev => ({ ...prev, minAmount: e.target.value }))}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
-              Max Amount (₹)
+            <label style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', marginBottom: '0.2rem' }}>
+              Max (₹)
             </label>
             <input
               type="number"
-              placeholder="Max"
+              placeholder="Max ₹"
               className="form-input"
-              style={{ minHeight: '36px', fontSize: '0.85rem' }}
+              style={{ minHeight: '38px', fontSize: '0.85rem' }}
               value={filters.maxAmount}
               onChange={(e) => setFilters(prev => ({ ...prev, maxAmount: e.target.value }))}
             />
@@ -227,9 +275,9 @@ export default function FilterPanel({
       {/* Filtered Total & Transaction Count Bar */}
       <div className="filter-summary-row">
         <div className="filter-metrics">
-          <span>Transactions: <strong>{summary?.filtered_count || 0}</strong></span>
-          <span style={{ margin: '0 0.5rem', color: 'var(--border-light)' }}>|</span>
-          <span>Total Spending: <strong style={{ color: 'var(--primary)' }}>{formatINR(summary?.filtered_total || 0)}</strong></span>
+          <span>Found: <strong>{summary?.filtered_count || 0}</strong> records</span>
+          <span style={{ margin: '0 0.5rem', color: 'var(--border-input)' }}>•</span>
+          <span>Total: <strong style={{ color: 'var(--primary)', fontWeight: 700 }}>{formatINR(summary?.filtered_total || 0)}</strong></span>
         </div>
 
         {onExportCSV && (
@@ -237,9 +285,9 @@ export default function FilterPanel({
             type="button"
             onClick={onExportCSV}
             className="btn btn-secondary btn-sm"
-            style={{ alignSelf: 'flex-start' }}
+            style={{ alignSelf: 'flex-start', borderRadius: 'var(--radius-sm)' }}
           >
-            <Download size={14} />
+            <Download size={13} />
             <span>Export CSV</span>
           </button>
         )}

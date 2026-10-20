@@ -5,40 +5,43 @@ export default function BottomNav({ currentTab, setTab, onOpenAddExpense }) {
   return (
     <nav className="bottom-nav">
       <button
+        type="button"
         onClick={() => setTab('dashboard')}
         className={`bottom-nav-item ${currentTab === 'dashboard' ? 'active' : ''}`}
-        style={{ background: 'none', border: 'none' }}
+        aria-label="Dashboard"
       >
-        <LayoutDashboard size={20} />
+        <LayoutDashboard size={21} />
         <span>Dashboard</span>
       </button>
 
       <button
+        type="button"
         onClick={() => setTab('expenses')}
         className={`bottom-nav-item ${currentTab === 'expenses' ? 'active' : ''}`}
-        style={{ background: 'none', border: 'none' }}
+        aria-label="Expenses"
       >
-        <Receipt size={20} />
+        <Receipt size={21} />
         <span>Expenses</span>
       </button>
 
       <div className="bottom-nav-item add-btn-item">
         <button
+          type="button"
           onClick={onOpenAddExpense}
           className="add-circle-btn"
-          aria-label="Add Expense"
-          style={{ border: 'none', cursor: 'pointer' }}
+          aria-label="Add New Expense"
         >
-          <Plus size={24} />
+          <Plus size={26} strokeWidth={2.5} />
         </button>
       </div>
 
       <button
+        type="button"
         onClick={() => setTab('categories')}
         className={`bottom-nav-item ${currentTab === 'categories' ? 'active' : ''}`}
-        style={{ background: 'none', border: 'none' }}
+        aria-label="Categories"
       >
-        <Tag size={20} />
+        <Tag size={21} />
         <span>Categories</span>
       </button>
     </nav>

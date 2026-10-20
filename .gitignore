@@ -30,3 +30,7 @@ Thumbs.db
 # Uploaded receipts (keep uploads dir)
 server/uploads/*
 !server/uploads/.gitkeep
+
+# Vercel
+.vercel/
+
