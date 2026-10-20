@@ -80,26 +80,26 @@ Below the cards:
 
 ---
 
-## 🚀 Running the Application Locally
+## 🚀 Running the Application (1-Click Launchers)
 
-### 1. Database
-Ensure your MySQL server is running on `127.0.0.1:3306`.
-```sql
-CREATE DATABASE IF NOT EXISTS paytrack_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+Double-click any of the provided Windows `.bat` files in the project root:
 
-### 2. Backend Server
+- **`start-backend.bat`**: Starts the Node.js Express backend on `http://localhost:5000` (auto-checks MySQL & installs packages if needed).
+- **`start-frontend.bat`**: Starts the React Vite frontend on `http://localhost:5173`.
+- **`start-all.bat`**: Starts **both** Backend and Frontend in separate windows and automatically opens `http://localhost:5173` in your browser!
+
+### Running via Terminal:
+
+**Backend:**
 ```bash
-cd server
-npm install
-node server.js
+npm run start:backend
+# or: cd backend && node server.js
 ```
-Backend runs at `http://localhost:5000`.
 
-### 3. Frontend App
+**Frontend:**
 ```bash
-cd client
-npm install
-npm run dev
+npm run start:frontend
+# or: cd frontend && npm run dev
 ```
+
 Open **`http://localhost:5173`** in your browser.

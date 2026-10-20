@@ -3,13 +3,16 @@ import {
   LayoutDashboard, 
   Receipt, 
   Tag, 
-  PlusCircle
+  PlusCircle,
+  HandCoins,
+  Users
 } from 'lucide-react';
 
-export default function Sidebar({ currentTab, setTab, onOpenAddExpense }) {
+export default function Sidebar({ currentTab, setTab, onOpenAddExpense, onOpenFriendModal }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'expenses', label: 'All Expenses', icon: Receipt },
+    { id: 'friends', label: 'Friends Ledger', icon: HandCoins },
     { id: 'categories', label: 'Categories', icon: Tag }
   ];
 
@@ -37,7 +40,7 @@ export default function Sidebar({ currentTab, setTab, onOpenAddExpense }) {
         </span>
       </div>
 
-      <div style={{ marginBottom: '1.25rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.25rem' }}>
         <button 
           onClick={onOpenAddExpense} 
           className="btn btn-primary btn-full"
@@ -45,6 +48,16 @@ export default function Sidebar({ currentTab, setTab, onOpenAddExpense }) {
         >
           <PlusCircle size={18} />
           <span>Add Expense</span>
+        </button>
+
+        {/* Dedicated Friend Popup Trigger */}
+        <button
+          onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
+          className="btn btn-full friend-sidebar-btn"
+          style={{ gap: '0.5rem', height: '38px', fontWeight: 600 }}
+        >
+          <HandCoins size={17} />
+          <span>Friends Ledger</span>
         </button>
       </div>
 

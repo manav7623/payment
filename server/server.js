@@ -27,12 +27,14 @@ const expenseRoutes = require('./routes/expenseRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const auditRoutes = require('./routes/auditRoutes');
+const friendRoutes = require('./routes/friendRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/audit-logs', auditRoutes);
+app.use('/api/friends', friendRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({

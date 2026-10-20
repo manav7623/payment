@@ -116,6 +116,29 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
+    // 6. Friend transactions table (Separate ledger for friends)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS friend_transactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        friend_name VARCHAR(100) NOT NULL,
+        friend_phone VARCHAR(20) DEFAULT NULL,
+        type ENUM('gave', 'took') NOT NULL,
+        amount DECIMAL(12, 2) NOT NULL,
+        transaction_date DATE NOT NULL,
+        notes TEXT DEFAULT NULL,
+        status ENUM('pending', 'settled') NOT NULL DEFAULT 'pending',
+        settled_date DATE DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_friend_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX idx_friend_user (user_id),
+        INDEX idx_friend_name (friend_name),
+        INDEX idx_friend_status (status),
+        INDEX idx_friend_date (transaction_date)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
     // Default Categories list
     const defaultCategories = [
       { name: 'Food & Dining', icon: 'Utensils', color: '#ea580c' },
@@ -214,7 +237,66 @@ async function initDatabase() {
         (?, 'Manav (Me)', 'ADD_EXPENSE', 'Added expense: Lunch at Cafe & Juices (₹350)', '127.0.0.1')
       `, [brotherId, myId]);
 
-      console.log('✅ Brother & Client accounts and sample expenses seeded successfully!');
+      // Seed sample friend transactions on first setup
+      console.log('🌱 Seeding initial Friends Ledger transactions...');
+      const sampleFriendTx = [
+        {
+          friend_name: 'Rahul Sharma',
+          friend_phone: '+91 98765 11223',
+          type: 'gave', // Lent to friend (To receive)
+          amount: 650.00,
+          date: '2026-10-18',
+          notes: 'Dinner bill split at BBQ Nation',
+          status: 'pending'
+        },
+        {
+          friend_name: 'Aman Verma',
+          friend_phone: '+91 98220 33445',
+          type: 'took', // Borrowed from friend (To pay)
+          amount: 300.00,
+          date: '2026-10-17',
+          notes: 'Auto & metro travel share',
+          status: 'pending'
+        },
+        {
+          friend_name: 'Rohit Mehta',
+          friend_phone: '+91 97110 55667',
+          type: 'gave', // Lent to friend (To receive)
+          amount: 1200.00,
+          date: '2026-10-15',
+          notes: 'Concert pass booking advance',
+          status: 'pending'
+        },
+        {
+          friend_name: 'Priya Patel',
+          friend_phone: '+91 98980 77889',
+          type: 'gave', // Lent to friend (settled)
+          amount: 400.00,
+          date: '2026-10-10',
+          notes: 'Stationery & photocopy split',
+          status: 'settled',
+          settled_date: '2026-10-14'
+        }
+      ];
+
+      for (const f of sampleFriendTx) {
+        await connection.query(`
+          INSERT INTO friend_transactions (
+            user_id, friend_name, friend_phone, type, amount, transaction_date, notes, status, settled_date
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          myId,
+          f.friend_name,
+          f.friend_phone,
+          f.type,
+          f.amount,
+          f.date,
+          f.notes,
+          f.status,
+          f.settled_date || null
+        ]);
+      }
+      console.log('✅ Brother & Client accounts, sample expenses, and friend records seeded successfully!');
     }
 
     connection.release();

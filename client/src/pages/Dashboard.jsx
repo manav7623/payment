@@ -5,12 +5,14 @@ import PaymentChart from '../components/PaymentChart';
 import CategorySummary from '../components/CategorySummary';
 import ExpenseCard from '../components/ExpenseCard';
 import ExpenseTable from '../components/ExpenseTable';
-import { PlusCircle, ArrowRight, RefreshCw } from 'lucide-react';
+import FriendsSummaryWidget from '../components/FriendsSummaryWidget';
+import { PlusCircle, ArrowRight, RefreshCw, HandCoins } from 'lucide-react';
 
 export default function Dashboard({ 
   onOpenAddExpense, 
   onViewExpenseDetails, 
-  onNavigateToExpenses 
+  onNavigateToExpenses,
+  onOpenFriendModal
 }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,6 +59,17 @@ export default function Dashboard({
             <span className="desktop-only">Refresh</span>
           </button>
 
+          {/* Quick Friend Popup Trigger */}
+          <button
+            type="button"
+            onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
+            className="btn btn-sm friend-nav-btn"
+            style={{ height: '38px' }}
+          >
+            <HandCoins size={16} />
+            <span>Friend</span>
+          </button>
+
           <button
             type="button"
             onClick={onOpenAddExpense}
@@ -71,6 +84,9 @@ export default function Dashboard({
 
       {/* 4 Primary Summary Cards */}
       <SummaryCards summary={data?.summary} loading={loading} />
+
+      {/* Friends Ledger Widget (Separate from personal expenses) */}
+      <FriendsSummaryWidget onOpenFriendModal={onOpenFriendModal} />
 
       {/* Monthly Spending Chart & Category Breakdown Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>

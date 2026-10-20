@@ -1,16 +1,20 @@
 # Dependencies
 node_modules/
+frontend/node_modules/
+backend/node_modules/
 client/node_modules/
 server/node_modules/
 
 # Production build outputs
 dist/
+frontend/dist/
 client/dist/
 
 # Environment files
 .env
 .env.local
 .env.*.local
+backend/.env
 server/.env
 
 # Logs and debug
@@ -28,6 +32,8 @@ Thumbs.db
 .idea/
 
 # Uploaded receipts (keep uploads dir)
+backend/uploads/*
+!backend/uploads/.gitkeep
 server/uploads/*
 !server/uploads/.gitkeep
 

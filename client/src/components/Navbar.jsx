@@ -1,7 +1,7 @@
 import React from 'react';
-import { PlusCircle, Wallet } from 'lucide-react';
+import { PlusCircle, Wallet, HandCoins } from 'lucide-react';
 
-export default function Navbar({ onOpenAddExpense }) {
+export default function Navbar({ onOpenAddExpense, onOpenFriendModal }) {
   return (
     <header className="top-navbar">
       <div className="top-navbar-title">
@@ -16,7 +16,18 @@ export default function Navbar({ onOpenAddExpense }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+        {/* Dedicated Friend Popup Button */}
+        <button
+          type="button"
+          onClick={() => onOpenFriendModal && onOpenFriendModal('add')}
+          className="btn btn-sm friend-nav-btn"
+          title="Friends Ledger Popup"
+        >
+          <HandCoins size={16} />
+          <span>Friends</span>
+        </button>
+
         <button
           type="button"
           onClick={onOpenAddExpense}

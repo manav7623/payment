@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, Receipt, Plus, Tag } from 'lucide-react';
+import { LayoutDashboard, Receipt, Plus, Tag, HandCoins } from 'lucide-react';
 
-export default function BottomNav({ currentTab, setTab, onOpenAddExpense }) {
+export default function BottomNav({ currentTab, setTab, onOpenAddExpense, onOpenFriendModal }) {
   return (
     <nav className="bottom-nav">
       <button
@@ -34,6 +34,16 @@ export default function BottomNav({ currentTab, setTab, onOpenAddExpense }) {
           <Plus size={26} strokeWidth={2.5} />
         </button>
       </div>
+
+      <button
+        type="button"
+        onClick={() => setTab('friends')}
+        className={`bottom-nav-item ${currentTab === 'friends' ? 'active' : ''}`}
+        aria-label="Friends Ledger"
+      >
+        <HandCoins size={21} />
+        <span>Friends</span>
+      </button>
 
       <button
         type="button"

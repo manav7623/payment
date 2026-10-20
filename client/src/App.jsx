@@ -5,9 +5,11 @@ import BottomNav from './components/BottomNav';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Categories from './pages/Categories';
+import Friends from './pages/Friends';
 import AddExpenseModal from './components/AddExpenseModal';
 import EditExpenseModal from './components/EditExpenseModal';
 import ExpenseDetailModal from './components/ExpenseDetailModal';
+import FriendModal from './components/FriendModal';
 import api from './api/client';
 
 export default function App() {
@@ -18,12 +20,23 @@ export default function App() {
   const [selectedExpenseDetail, setSelectedExpenseDetail] = useState(null);
   const [editingExpense, setEditingExpense] = useState(null);
 
+  // Friend Modal State (Dedicated Friend Popup)
+  const [isFriendModalOpen, setIsFriendModalOpen] = useState(false);
+  const [friendModalTab, setFriendModalTab] = useState('add');
+  const [friendModalTarget, setFriendModalTarget] = useState(null);
+
   // Toast notification
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleOpenFriendModal = (tab = 'add', targetFriend = null) => {
+    setFriendModalTab(tab);
+    setFriendModalTarget(targetFriend);
+    setIsFriendModalOpen(true);
   };
 
   // Delete expense handler
@@ -44,11 +57,15 @@ export default function App() {
         currentTab={currentTab}
         setTab={setTab}
         onOpenAddExpense={() => setIsAddExpenseOpen(true)}
+        onOpenFriendModal={handleOpenFriendModal}
       />
 
       {/* Main Wrapper */}
       <div className="main-wrapper">
-        <Navbar onOpenAddExpense={() => setIsAddExpenseOpen(true)} />
+        <Navbar 
+          onOpenAddExpense={() => setIsAddExpenseOpen(true)}
+          onOpenFriendModal={handleOpenFriendModal}
+        />
 
         {/* Global Toast Notification */}
         {toast && (
@@ -72,6 +89,7 @@ export default function App() {
               onOpenAddExpense={() => setIsAddExpenseOpen(true)}
               onViewExpenseDetails={(exp) => setSelectedExpenseDetail(exp)}
               onNavigateToExpenses={() => setTab('expenses')}
+              onOpenFriendModal={handleOpenFriendModal}
             />
           )}
 
@@ -81,6 +99,12 @@ export default function App() {
               onViewExpenseDetails={(exp) => setSelectedExpenseDetail(exp)}
               onEditExpense={(exp) => setEditingExpense(exp)}
               onDeleteExpense={handleDeleteExpense}
+            />
+          )}
+
+          {currentTab === 'friends' && (
+            <Friends
+              onOpenFriendModal={handleOpenFriendModal}
             />
           )}
 
@@ -95,6 +119,7 @@ export default function App() {
         currentTab={currentTab}
         setTab={setTab}
         onOpenAddExpense={() => setIsAddExpenseOpen(true)}
+        onOpenFriendModal={handleOpenFriendModal}
       />
 
       {/* Add Expense Modal */}
@@ -103,6 +128,17 @@ export default function App() {
         onClose={() => setIsAddExpenseOpen(false)}
         onSuccess={() => {
           showToast('Expense recorded successfully!');
+        }}
+      />
+
+      {/* Dedicated Friend Popup Modal */}
+      <FriendModal
+        isOpen={isFriendModalOpen}
+        onClose={() => setIsFriendModalOpen(false)}
+        initialTab={friendModalTab}
+        selectedFriendName={friendModalTarget}
+        onSuccess={(msg) => {
+          showToast(msg || 'Friends ledger updated successfully!');
         }}
       />
 
