@@ -1,0 +1,19 @@
+{
+  "name": "paytrack-root",
+  "version": "1.0.0",
+  "description": "PayTrack - Simple & Mobile-Friendly Payment Management Website",
+  "scripts": {
+    "start:server": "node server/server.js",
+    "start:client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build"
+  },
+  "keywords": [
+    "payment",
+    "management",
+    "react",
+    "nodejs",
+    "mysql"
+  ],
+  "author": "PayTrack Team",
+  "license": "ISC"
+}
