@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'Server build complete'",
     "start": "node server.js",
     "dev": "node server.js",
     "db:clear": "node scripts/clearDatabase.js",

@@ -180,6 +180,15 @@ exports.getFriendsLedger = async (req, res) => {
       const gave = parseFloat(item.total_gave || 0);
       const took = parseFloat(item.total_took || 0);
       const net = gave - took; // > 0: You get, < 0: You give, 0: Even
+      const rawDate = item.last_date;
+      let formattedLastDate = null;
+      if (rawDate) {
+        if (rawDate instanceof Date) {
+          formattedLastDate = rawDate.toISOString().split('T')[0];
+        } else {
+          formattedLastDate = String(rawDate).split('T')[0];
+        }
+      }
       return {
         friend_name: item.friend_name,
         friend_phone: item.friend_phone,
@@ -190,7 +199,7 @@ exports.getFriendsLedger = async (req, res) => {
         pendingCount: item.pending_count,
         settledCount: item.settled_count,
         totalCount: item.total_count,
-        lastDate: item.last_date ? item.last_date.toISOString().split('T')[0] : null
+        lastDate: formattedLastDate
       };
     });
 

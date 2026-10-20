@@ -30,8 +30,9 @@ if (process.env.DATABASE_URL || process.env.MYSQL_URL) {
 }
 
 async function initDatabase() {
+  let connection;
   try {
-    const connection = await pool.getConnection();
+    connection = await pool.getConnection();
     console.log('✅ Connected to MySQL database successfully.');
 
     // 1. Users table
@@ -117,27 +118,31 @@ async function initDatabase() {
     `);
 
     // 6. Friend transactions table (Separate ledger for friends)
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS friend_transactions (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        friend_name VARCHAR(100) NOT NULL,
-        friend_phone VARCHAR(20) DEFAULT NULL,
-        type ENUM('gave', 'took') NOT NULL,
-        amount DECIMAL(12, 2) NOT NULL,
-        transaction_date DATE NOT NULL,
-        notes TEXT DEFAULT NULL,
-        status ENUM('pending', 'settled') NOT NULL DEFAULT 'pending',
-        settled_date DATE DEFAULT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        CONSTRAINT fk_friend_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        INDEX idx_friend_user (user_id),
-        INDEX idx_friend_name (friend_name),
-        INDEX idx_friend_status (status),
-        INDEX idx_friend_date (transaction_date)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-    `);
+    try {
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS friend_transactions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          friend_name VARCHAR(100) NOT NULL,
+          friend_phone VARCHAR(20) DEFAULT NULL,
+          type ENUM('gave', 'took') NOT NULL,
+          amount DECIMAL(12, 2) NOT NULL,
+          transaction_date DATE NOT NULL,
+          notes TEXT DEFAULT NULL,
+          status ENUM('pending', 'settled') NOT NULL DEFAULT 'pending',
+          settled_date DATE DEFAULT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          INDEX idx_friend_user (user_id),
+          INDEX idx_friend_name (friend_name),
+          INDEX idx_friend_status (status),
+          INDEX idx_friend_date (transaction_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+      `);
+      console.log('✅ friend_transactions table verified/ready.');
+    } catch (ftErr) {
+      console.warn('⚠️ friend_transactions table init warning:', ftErr.message);
+    }
 
     // Default Categories list
     const defaultCategories = [
@@ -298,10 +303,10 @@ async function initDatabase() {
       }
       console.log('✅ Brother & Client accounts, sample expenses, and friend records seeded successfully!');
     }
-
-    connection.release();
   } catch (err) {
     console.error('❌ Error initializing database:', err);
+  } finally {
+    if (connection) connection.release();
   }
 }
 
